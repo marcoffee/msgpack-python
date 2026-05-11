@@ -2,6 +2,7 @@
 import os
 import sys
 
+from Cython.Build import cythonize
 from setuptools import Extension, setup
 
 PYPY = hasattr(sys, "pypy_version_info")
@@ -18,7 +19,7 @@ if not PYPY and not os.environ.get("MSGPACK_PUREPYTHON"):
     ext_modules.append(
         Extension(
             "msgpack._cmsgpack",
-            sources=["msgpack/_cmsgpack.c"],
+            sources=["msgpack/_cmsgpack.pyx"],
             libraries=libraries,
             include_dirs=["."],
             define_macros=macros,
@@ -27,6 +28,6 @@ if not PYPY and not os.environ.get("MSGPACK_PUREPYTHON"):
 del libraries, macros
 
 setup(
-    ext_modules=ext_modules,
+    ext_modules=cythonize(ext_modules),
     packages=["msgpack"],
 )
